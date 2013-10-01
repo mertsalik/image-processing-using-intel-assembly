@@ -25,6 +25,7 @@ image2 	resb 1				; pointer for image2 unsigned char array
 width 	resd 1				; image1 width
 height	resd 1				; image2 height
 
+segment .data
 intf db "%d", 10, 0			; for printf
 
 
@@ -37,15 +38,17 @@ grow:
 	mov ebp, esp
 	sub esp, 8
 
-	mov height, [ebp+20]		; get height of image1
-	mov width, [ebp+16]		; get width of image2
+	mov eax, [ebp+20]
+	mov [height], eax		; get height of image1
+	mov eax, [ebp+16]
+	mov [width], eax		; get width of image2
 
-	push byte [height]		; lets print height
+	push word [height]		; lets print height
 	push intf
 	call printf
 	add esp, 8
 
-	push byte [width]              ; lets print width
+	push word [width]              ; lets print width
         push intf
         call printf
         add esp, 8
