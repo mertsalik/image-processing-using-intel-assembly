@@ -23,11 +23,12 @@ segment .bss
 image1 	resb 1				; pointer for image1 unsigned char array
 image2 	resb 1				; pointer for image2 unsigned char array
 width 	resd 1				; image1 width
-height	resd 1				; image2 height
+height	resd 1				; image1 height
+w2	resd 1				; new width
+h2	resd 2				; new height
 
 segment .data
 intf db "%d", 10, 0			; for printf
-
 
 segment .text
 global grow
@@ -40,15 +41,19 @@ grow:
 
 	mov eax, [ebp+20]
 	mov [height], eax		; get height of image1
+	shl eax, 1
+	mov [h2],eax
 	mov eax, [ebp+16]
 	mov [width], eax		; get width of image2
+	shl eax, 1
+	mov [w2], eax
 
-	push word [height]		; lets print height
+	push dword [h2]			; lets print height
 	push intf
 	call printf
 	add esp, 8
 
-	push word [width]              ; lets print width
+	push dword [w2]			; lets print width
         push intf
         call printf
         add esp, 8
@@ -56,3 +61,4 @@ grow:
 	mov esp, ebp
 	pop ebp
 	ret
+
