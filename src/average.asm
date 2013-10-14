@@ -1,14 +1,28 @@
 
 
-
 segment .text
 global average
+extern printf
 
 average:
-	push ebp
-	mov ebp, esp
-
-
-	mov esp, ebp
+	
+	push ebp			
+	mov ebp, esp	
+	mov ebx, [ebp+16]	;for width
+	mov eax, [ebp+20]	;for height
+	mul ebx			;# of pixels
+	mov ecx, eax		;counter is set
+	xor ebx, ebx		;ebx is cleared
+	add ebx, [ebp+12]	;value is assigned to ebx
+	mov esp, [ebp+8]	;the address of image is pointed by esp
+	
+loop:
+	dec ecx				;counter is decremented
+	add dword [esp], ebx		;values is assigned to image pixel
+	inc esp				;next pixel
+	cmp ecx,0			;if image isnot completed then jump back 
+	jne loop
+	
+	mov esp, ebp			;return procedures
 	pop ebp
 	ret
