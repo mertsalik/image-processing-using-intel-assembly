@@ -19,44 +19,36 @@
 ;	|	w	|
 ;	|	h	|
 
-segment .bss
-image1 	resb 1				; pointer for image1 unsigned char array
-image2 	resb 1				; pointer for image2 unsigned char array
-width 	resd 1				; image1 width
-height	resd 1				; image1 height
-w2	resd 1				; new width
-h2	resd 2				; new height
-
-segment .data
-intf db "%d", 10, 0			; for printf
-
 segment .text
 global grow
-extern printf
 
 grow:
 	push ebp
 	mov ebp, esp
-	sub esp, 8
-
+	mov ebx, [ebp+16]
 	mov eax, [ebp+20]
-	mov [height], eax		; get height of image1
-	shl eax, 1
-	mov [h2],eax
-	mov eax, [ebp+16]
-	mov [width], eax		; get width of image2
-	shl eax, 1
-	mov [w2], eax
+	mul ebx			; # of pixels
+	mov ecx, eax		; set the counter
+	xor ebx, ebx		; clear ebx
+	mov ebx, [ebp+12]	; the address of second image is in ebx
+	mov esp, [ebp+8]	; the address of image is in esp
 
-	push dword [h2]			; lets print height
-	push intf
-	call printf
-	add esp, 8
+loop:
+	dec ecx			; counter is decremented
+	mov eax, dword [esp]	; get pixel value
 
-	push dword [w2]			; lets print width
-        push intf
-        call printf
-        add esp, 8
+	mov dword [ebx], eax	; then assign it 4 times
+	inc ebx			;
+	mov dword [ebx], eax	;
+	inc ebx			;
+	mov dword [ebx], eax	;
+	inc ebx
+	mov dword [ebx], eax	;
+	inc ebx
+
+	inc esp			; next pixel
+	cmp ecx,0		; if is not completed
+	jne loop
 
 	mov esp, ebp
 	pop ebp

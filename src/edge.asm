@@ -14,7 +14,7 @@ edge:
 	add ebx, [ebp+20]	;value is assigned to ebx
 	mov edx, [ebp+8]	;the address of image is pointed by esp
 	
-looping:
+loop:
 	dec ecx				;counter is decremented
 	cmp [edx], ebx;values is assigned to image pixel
 	jg	white
