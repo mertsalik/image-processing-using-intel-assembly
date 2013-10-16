@@ -20,6 +20,10 @@ done
 #compile main C file
 gcc -c ./src/bitmap.c -o ./src/bitmap.o
 
+#clear all old object files & executables
+rm -rf ./src/objdir
+rm -rf ./bin
+
 #move all objects to objdir
 if [ ! -d "./src/objdir" ]; then
 	mkdir ./src/objdir
@@ -33,3 +37,12 @@ fi
 
 #link all
 gcc ./src/objdir/*.o -o ./bin/bitmap
+
+
+#copy all images to bin dir
+for image in $(find ./images -iname '*.bmp'); do
+	if [ $image ]; then
+		cp $image ./bin
+	fi
+done
+
