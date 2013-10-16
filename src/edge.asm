@@ -1,3 +1,6 @@
+segment .data
+width resd 0
+
 segment .text
 global edge
 
