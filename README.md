@@ -16,5 +16,5 @@ Required : GNU bash, version 4.2.45(1)-release
 
 # Run #
 
-> `./bin/bitmap`
+> `./bin/bitmap # lena.bmp`
 
