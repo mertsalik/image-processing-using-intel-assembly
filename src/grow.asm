@@ -19,38 +19,58 @@
 ;	|	w	|
 ;	|	h	|
 
+segment .data
+intf db "%d", 10, 0
+
 segment .text
 global grow
+extern printf
 
 grow:
-	push ebp
-	mov ebp, esp
-	mov ebx, [ebp+16]
-	mov eax, [ebp+20]
-	mul ebx			; # of pixels
-	mov ecx, eax		; set the counter
-	xor ebx, ebx		; clear ebx
-	mov ebx, [ebp+12]	; the address of second image is in ebx
-	mov esp, [ebp+8]	; the address of image is in esp
+        push ebp
+        mov ebp, esp
+        ;sub esp, 8
+        
+        mov ecx, dword [ebp+16]			; w
+        mov edx, dword [ebp+20]			; h
 
-loop:
-	dec ecx			; counter is decremented
-	mov eax, dword [esp]	; get pixel value
+        mov ebx, [ebp+12]        ; the address of second image is in ebx
+        mov esp, [ebp+8]        ; the address of image is in esp
+        
+		
+		mov eax, 0
 
-	mov dword [ebx], eax	; then assign it 4 times
-	inc ebx			;
-	mov dword [ebx], eax	;
-	inc ebx			;
-	mov dword [ebx], eax	;
-	inc ebx
-	mov dword [ebx], eax	;
-	inc ebx
+looph:
+        dec edx                        ; decrement i
+		
+		mov ecx, dword [ebp+16]			; width
+        loopw:
+			dec ecx
+			
+			mov eax, dword [esp]
+			mov dword [ebx], eax	; 0
+			inc ebx
+			mov dword [ebx], eax	; 1
+			dec ebx
+			add ebx, dword [ebp+16]
+			add ebx, dword [ebp+16] ; 
+			mov dword [ebx], eax	; 2
+			inc ebx
+			mov dword [ebx], eax	; 3
+			inc ebx
+			sub ebx, dword [ebp+16]
+			sub ebx, dword [ebp+16]
+			
+			inc esp
+			cmp ecx, 0 				; if j!=0
+			jne loopw
+		
+		add ebx, dword [ebp+16]
+		add ebx, dword [ebp+16]
+		
+		cmp edx, 0					; if i!=0
+		jne looph
 
-	inc esp			; next pixel
-	cmp ecx,0		; if is not completed
-	jne loop
-
-	mov esp, ebp
-	pop ebp
-	ret
-
+        mov esp, ebp
+        pop ebp
+        ret
