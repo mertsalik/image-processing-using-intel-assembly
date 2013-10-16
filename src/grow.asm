@@ -19,56 +19,49 @@
 ;	|	w	|
 ;	|	h	|
 
-segment .data
-intf db "%d", 10, 0
 
 segment .text
 global grow
-extern printf
 
 grow:
         push ebp
         mov ebp, esp
-        ;sub esp, 8
         
         mov ecx, dword [ebp+16]			; w
         mov edx, dword [ebp+20]			; h
 
-        mov ebx, [ebp+12]        ; the address of second image is in ebx
-        mov esp, [ebp+8]        ; the address of image is in esp
-        
-		
-		mov eax, 0
+        mov ebx, [ebp+12]        		; the address of second image is in ebx
+        mov esp, [ebp+8]        		; the address of image is in esp
 
 looph:
-        dec edx                        ; decrement i
+        dec edx                        	; decrement i
 		
 		mov ecx, dword [ebp+16]			; width
         loopw:
 			dec ecx
 			
 			mov eax, dword [esp]
-			mov dword [ebx], eax	; 0
+			mov dword [ebx], eax		; 0
 			inc ebx
-			mov dword [ebx], eax	; 1
+			mov dword [ebx], eax		; 1
 			dec ebx
 			add ebx, dword [ebp+16]
-			add ebx, dword [ebp+16] ; 
-			mov dword [ebx], eax	; 2
+			add ebx, dword [ebp+16]
+			mov dword [ebx], eax		; 2
 			inc ebx
-			mov dword [ebx], eax	; 3
+			mov dword [ebx], eax		; 3
 			inc ebx
 			sub ebx, dword [ebp+16]
 			sub ebx, dword [ebp+16]
 			
 			inc esp
-			cmp ecx, 0 				; if j!=0
+			cmp ecx, 0 					; if j!=0
 			jne loopw
 		
-		add ebx, dword [ebp+16]
+		add ebx, dword [ebp+16]			; have to move newimage index width*2
 		add ebx, dword [ebp+16]
 		
-		cmp edx, 0					; if i!=0
+		cmp edx, 0						; if i!=0
 		jne looph
 
         mov esp, ebp
