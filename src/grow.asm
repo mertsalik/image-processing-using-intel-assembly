@@ -38,7 +38,7 @@ looph:
 		
 		mov ecx, dword [ebp+16]			; width
         loopw:
-			dec ecx
+			dec ecx						; decrement j
 			
 			mov eax, dword [esp]
 			mov dword [ebx], eax		; 0
