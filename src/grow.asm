@@ -26,46 +26,50 @@ global grow
 grow:
         push ebp
         mov ebp, esp
-        push ebx
+        push ebx				; store ebx in stack
         
-        mov ecx, dword [ebp+16]			; w
-        mov edx, dword [ebp+20]			; h
+        mov edx, dword [ebp+20]			; height in edx
 
         mov ebx, [ebp+12]        		; the address of second image is in ebx
         mov esp, [ebp+8]        		; the address of image is in esp
 
 looph:
-        dec edx                        	; decrement i
-		
-		mov ecx, dword [ebp+16]			; width
+        dec edx                        		; decrement i	
+	mov ecx, dword [ebp+16]			; get width to ecx
         loopw:
-			dec ecx						; decrement j
+		dec ecx				; decrement j
 			
-			mov eax, dword [esp]
-			mov dword [ebx], eax		; 0
-			inc ebx
-			mov dword [ebx], eax		; 1
-			dec ebx
-			add ebx, dword [ebp+16]
-			add ebx, dword [ebp+16]
-			mov dword [ebx], eax		; 2
-			inc ebx
-			mov dword [ebx], eax		; 3
-			inc ebx
-			sub ebx, dword [ebp+16]
-			sub ebx, dword [ebp+16]
-			
-			inc esp
-			cmp ecx, 0 					; if j!=0
-			jne loopw
-		
-		add ebx, dword [ebp+16]			; have to move newimage index width*2
-		add ebx, dword [ebp+16]
-		
-		cmp edx, 0						; if i!=0
-		jne looph
+		mov eax, dword [esp]		; get current pixel to eax
 
-		pop ebx
-        mov esp, ebp
-        pop ebp
+		mov dword [ebx], eax		; save 0. pixel
+		inc ebx
+		mov dword [ebx], eax		; save  1. pixel
+		dec ebx
+
+		add ebx, dword [ebp+16]		; move to next line of new image
+		add ebx, dword [ebp+16]		; (width * 2)
+
+		mov dword [ebx], eax		; save 2. pixel
+		inc ebx
+		mov dword [ebx], eax		; save 3. pixel
+		inc ebx
+
+		sub ebx, dword [ebp+16]		; turn back to previous line
+		sub ebx, dword [ebp+16]		; (width * 2)
+		
+		inc esp				; next pixel
+		cmp ecx, 0 			; if j!=0
+		jne loopw			; iterate in loopw
+		; end of loop w
+		
+	add ebx, dword [ebp+16]			; have to move newimage index width*2
+	add ebx, dword [ebp+16]
+	
+	cmp edx, 0				; if i!=0
+	jne looph				; iterate in looph
+	; end of loop h
+
+	pop ebx					; store old ebx back
+        mov esp, ebp				
+        pop ebp					; store old ebp back
         ret
