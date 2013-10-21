@@ -24,15 +24,17 @@ global blur
 blur:
 		push ebp
         mov ebp, esp
+        push esi
+        push ebx
         
         mov ecx, dword [ebp+12]			; w
-        mov ebx, dword [ebp+16]			; h
+        mov esi, dword [ebp+16]			; h
 
         mov esp, [ebp+8]        		; the address of image is in esp
 
 looph:
-        dec ebx                        	; decrement i
-        dec ebx                        	; decrement i
+        dec esi                        	; decrement i
+        dec esi                        	; decrement i
 		
 		mov ecx, dword [ebp+12]			; width
         loopw:
@@ -41,24 +43,29 @@ looph:
 			
 			
 			xor eax, eax
-			add eax, dword [esp]		; 0
+			xor ebx, ebx
+			xor edx, edx
+			mov al, byte [esp]		; 0
 			inc esp
-			add eax, dword [esp]		; 1
+			mov bl, byte [esp]		; 1
+			add ax, bx				; -> ax
 			dec esp
 			add esp, dword [ebp+12]
-			add eax, dword [esp]		; 2
+			mov bl, byte [esp]		; 2
 			inc esp
-			add eax, dword [esp]		; 3
+			mov dl, byte [esp]		; 3
+			add bx, dx				; -> bx
+			add ax, bx				; -> ax
 			
-			sar eax, 2					; buggy 
+			shr eax, 2					; buggy 
 			
-			mov dword [esp], eax		; 3
+			mov byte [esp], al		; 3
 			dec esp
-			mov dword [esp], eax		; 2
+			mov byte [esp], al		; 2
 			sub esp, dword [ebp+12]
-			mov dword [esp], eax		; 0
+			mov byte [esp], al		; 0
 			inc esp
-			mov dword [esp], eax		; 1
+			mov byte [esp], al		; 1
 			
 			
 			inc esp
@@ -68,9 +75,11 @@ looph:
 		
 		add esp, dword [ebp+12]			; have to move image index current + width
 		
-		cmp ebx, 0						; if i!=0
+		cmp esi, 0						; if i!=0
 		jne looph
 
+		pop ebx
+		pop esi
         mov esp, ebp
         pop ebp
         ret
