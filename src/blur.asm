@@ -22,64 +22,65 @@ segment .text
 global blur
 
 blur:
-		push ebp
+	push ebp
         mov ebp, esp
-        push esi
-        push ebx
+        push esi				; store esi in stack
+        push ebx				; store ebx in stack
         
-        mov ecx, dword [ebp+12]			; w
-        mov esi, dword [ebp+16]			; h
+        mov esi, dword [ebp+16]			; height in esi
 
         mov esp, [ebp+8]        		; the address of image is in esp
 
 looph:
-        dec esi                        	; decrement i
-        dec esi                        	; decrement i
-		
-		mov ecx, dword [ebp+12]			; width
-        loopw:
-			dec ecx						; decrement j
-			dec ecx						; decrement j
-			
-			
-			xor eax, eax
-			xor ebx, ebx
-			xor edx, edx
-			mov al, byte [esp]		; 0
-			inc esp
-			mov bl, byte [esp]		; 1
-			add ax, bx				; -> ax
-			dec esp
-			add esp, dword [ebp+12]
-			mov bl, byte [esp]		; 2
-			inc esp
-			mov dl, byte [esp]		; 3
-			add bx, dx				; -> bx
-			add ax, bx				; -> ax
-			
-			shr eax, 2					; buggy 
-			
-			mov byte [esp], al		; 3
-			dec esp
-			mov byte [esp], al		; 2
-			sub esp, dword [ebp+12]
-			mov byte [esp], al		; 0
-			inc esp
-			mov byte [esp], al		; 1
-			
-			
-			inc esp
-			
-			cmp ecx, 0 					; if j!=0
-			jne loopw
-		
-		add esp, dword [ebp+12]			; have to move image index current + width
-		
-		cmp esi, 0						; if i!=0
-		jne looph
+        dec esi                        		; decrement i
+        dec esi                        		; decrement i
 
-		pop ebx
-		pop esi
+	mov ecx, dword [ebp+12]			; width
+        loopw:
+		dec ecx				; decrement j
+		dec ecx				; decrement j
+		
+		xor eax, eax			; clean eax register
+		xor ebx, ebx			; clean ebx register
+		xor edx, edx			; clean edx register
+		mov al, byte [esp]		; get 0. pixel in al
+		inc esp				; next pixel
+		mov bl, byte [esp]		; get 1. pixel in bl
+		add ax, bx			; add them in ax
+		dec esp	
+		add esp, dword [ebp+12]		; go to next line (i+width)
+		mov bl, byte [esp]		; get 2. pixel in bl
+		inc esp				; next pixel
+		mov dl, byte [esp]		; get 3. pixel in dl
+		add bx, dx			; add them in bx
+		add ax, bx			; sum of all pixels in ax
+		
+		shr eax, 2			; shift right two times (divide 4)
+		
+		mov byte [esp], al		; store 3. pixel
+		dec esp
+		mov byte [esp], al		; store 2. pixel
+		sub esp, dword [ebp+12]
+		mov byte [esp], al		; store 0. pixel
+		inc esp
+		mov byte [esp], al		; store 1. pixel
+		
+		
+		inc esp				; next pixel of image
+		
+		cmp ecx, 0 			; if j!=0
+		jne loopw			; iterate in loopw
+		; end of loopw
+	
+	add esp, dword [ebp+12]			; have to move image index current + width
+	
+	cmp esi, 0				; if i!=0
+	jne looph				; iterate in looph
+	; end of looph
+
+	pop ebx					; get back ebx from stack
+	pop esi					; get back esi from stack
         mov esp, ebp
         pop ebp
         ret
+
