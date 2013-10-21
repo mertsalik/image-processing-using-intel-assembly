@@ -24,44 +24,44 @@ global shrink
 
 
 shrink:
-		push ebp
-		mov ebp, esp
-		push ebx
+	push ebp
+	mov ebp, esp
+	push ebx
 
-		mov ecx, dword [ebp+16]			; w
-		mov edx, dword [ebp+20]			; h
+	mov edx, dword [ebp+20]			; h
 
-		mov ebx, [ebp+12]        		; the address of second image is in ebx
-		mov esp, [ebp+8]        		; the address of image is in esp
+	mov ebx, [ebp+12]        		; the address of second image is in ebx
+	mov esp, [ebp+8]        		; the address of image is in esp
 		
 		
 looph:
-        dec edx                        	;
-        dec edx                        	; i = i-2
-		
-		mov ecx, dword [ebp+16]			; width
+        dec edx                        		; decrement
+        dec edx                        		; i = i-2
+	mov ecx, dword [ebp+16]			; get width to ecx
         loopw:
-			dec ecx						;
-			dec ecx						; j = j-2
-			
-			mov eax, dword [esp]
-			mov dword [ebx], eax		; 0
-			inc ebx
-			inc esp
-			inc esp
-			
-			cmp ecx, 0 					; if j!=0
-			jne loopw
+		dec ecx				; decrement
+		dec ecx				; j = j-2
 		
-		mov eax, esp					;
-		add eax, dword [ebp+16]			;
-		mov esp, eax					; have to move image index currentpixel + width
+		mov eax, dword [esp]		; get current pixel
+		mov dword [ebx], eax		; store in new image
+		inc ebx				; next pixel of new image in ebx
+		inc esp				; have to move 2 pixel right
+		inc esp				; 
 		
-		cmp edx, 0						; if i!=0
-		jne looph
+		cmp ecx, 0 			; if j!=0
+		jne loopw			; iterate in loopw
+		; end of loopw
+		
+	mov eax, esp				; esp -> eax
+	add eax, dword [ebp+16]			; next line ptr of image in esp
+	mov esp, eax				; have to move image index currentpixel + width
+	
+	cmp edx, 0				; if i!=0
+	jne looph				; iterate in looph
+	; end of looph
 
-		pop ebx
-		mov esp, ebp
-		pop ebp
-		ret
+	pop ebx					; get old ebx value back
+	mov esp, ebp
+	pop ebp
+	ret
 
