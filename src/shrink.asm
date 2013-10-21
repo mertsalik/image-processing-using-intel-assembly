@@ -26,6 +26,7 @@ global shrink
 shrink:
 		push ebp
 		mov ebp, esp
+		push ebx
 
 		mov ecx, dword [ebp+16]			; w
 		mov edx, dword [ebp+20]			; h
@@ -59,6 +60,7 @@ looph:
 		cmp edx, 0						; if i!=0
 		jne looph
 
+		pop ebx
 		mov esp, ebp
 		pop ebp
 		ret
