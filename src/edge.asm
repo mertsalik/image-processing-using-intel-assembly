@@ -6,11 +6,12 @@ global edge
 
 
 edge:
-	
 	push ebp			
-	mov ebp, esp	
+	mov ebp, esp
+	
+	push ebx			;stored in stack 
 	mov ebx, [ebp+12]	;for width
-	mov dword[width],ebx
+	mov dword[width],ebx;to use less number of register memory is used and also it keeps static value
 	mov eax, [ebp+16]	;for height
 	mul ebx				;# of pixels
 	sub eax, ebx		;top row is substracted from width*height
@@ -37,11 +38,10 @@ inloop:
 	cmp ecx,0		
 	jne inloop
 				
+	pop ebx				; take back its first value
 	mov esp, ebp		;return procedures
 	pop ebp
 	ret
-white:
-	mov byte [edx], 255
+white:	;if above row brighter than the pixel that is being pointed now
+	mov byte [edx], 255	;
 	jmp ending
-
-
